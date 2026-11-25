@@ -27,6 +27,7 @@ export function isPlatformHost(host: string) {
     host === "localhost" ||
     host === "127.0.0.1" ||
     host.endsWith(".vercel.app") ||
+    host.endsWith(".netlify.app") ||
     (!!root && host === root)
   );
 }

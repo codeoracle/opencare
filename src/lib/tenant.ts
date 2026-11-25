@@ -138,9 +138,11 @@ export async function resolveTenantId(rawHost: string, previewSlug?: string | nu
   await connectDB();
 
   if (isPlatformHost(host)) {
-    // The platform's own domain only shows a client when previewing (?client=slug).
-    if (!previewSlug) return null;
-    return findTenantIdForKey(`slug:${previewSlug}`, { slug: previewSlug.toLowerCase() });
+    // The platform's own domain shows a client when previewing (?client=slug),
+    // otherwise DEFAULT_CLIENT (if set), otherwise the openCare landing page.
+    const slug = (previewSlug || process.env.DEFAULT_CLIENT || "").trim().toLowerCase();
+    if (!slug) return null;
+    return findTenantIdForKey(`slug:${slug}`, { slug });
   }
 
   const slug = subdomainSlug(host);
