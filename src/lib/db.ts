@@ -1,12 +1,11 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  throw new Error("Please define MONGODB_URI in environment variables");
+// Read lazily so the app can build (and show a clear error) before a database is configured.
+function getUri() {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) throw new Error("MONGODB_URI is not set. Add it in your hosting environment variables.");
+  return uri;
 }
-
-const uri: string = MONGODB_URI;
 
 interface MongooseCache {
   conn: typeof mongoose | null;
@@ -34,7 +33,7 @@ export async function connectDB() {
 
   if (!cached.promise) {
     cached.promise = mongoose
-      .connect(uri, {
+      .connect(getUri(), {
         bufferCommands: false,
         serverSelectionTimeoutMS: 8000,
         connectTimeoutMS: 8000,

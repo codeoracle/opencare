@@ -3,6 +3,7 @@ import { getAdminTenants, getLeadCounts } from "@/lib/adminQueries";
 import { CreateClientForm } from "@/components/admin/CreateClientForm";
 import { platformRootDomain } from "@/lib/hosts";
 import { clientSiteUrl } from "@/lib/clientUrls";
+import { ImportRafcareButton } from "@/components/admin/ImportRafcareButton";
 
 export default async function AdminClientsPage() {
   const [clients, leadCounts] = await Promise.all([getAdminTenants(), getLeadCounts()]);
@@ -16,6 +17,10 @@ export default async function AdminClientsPage() {
       </p>
 
       <div className="mt-6">
+        <ImportRafcareButton exists={clients.some((c) => c.slug === "rafcare")} />
+      </div>
+
+      <div className="mt-4">
         <CreateClientForm rootDomain={root} />
       </div>
 
