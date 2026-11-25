@@ -1,0 +1,120 @@
+"use client";
+
+import { whatsappLink } from "@/lib/utils";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { trackAdvertisedProductOrder } from "@/lib/facebookPixel";
+
+type ProductWhatsAppCTAProps = {
+  phone: string;
+  businessName: string;
+  productName: string;
+  className?: string;
+  advertised?: boolean;
+  productId?: string;
+  price?: number;
+};
+
+function orderMessage(businessName: string, productName: string) {
+  return `Hello ${businessName}, I want to order: ${productName}`;
+}
+
+function trackWhatsAppOrder(input: {
+  advertised?: boolean;
+  productId?: string;
+  productName: string;
+  price?: number;
+}) {
+  if (!input.advertised || !input.productId) return;
+  trackAdvertisedProductOrder({
+    advertised: true,
+    productId: input.productId,
+    productName: input.productName,
+    price: input.price ?? 0,
+  });
+}
+
+export function ProductWhatsAppCTA({
+  phone,
+  businessName,
+  productName,
+  className = "",
+  advertised,
+  productId,
+  price,
+}: ProductWhatsAppCTAProps) {
+  const waUrl = whatsappLink(phone, orderMessage(businessName, productName));
+
+  return (
+    <a
+      href={waUrl}
+      target="_blank"
+      rel="noreferrer"
+      onClick={() => trackWhatsAppOrder({ advertised, productId, productName, price })}
+      className={`flex items-start gap-3 rounded-2xl border border-[#25D366]/30 bg-[#25D366]/10 px-4 py-3 transition hover:bg-[#25D366]/15 ${className}`}
+    >
+      <span className="mt-0.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#25D366] text-white">
+        <WhatsAppIcon className="h-5 w-5" />
+      </span>
+      <span>
+        <span className="block text-[14px] font-semibold text-[#075E54]">
+          Prefer WhatsApp? Chat with us now
+        </span>
+        <span className="mt-1 block text-[12px] leading-5 text-[#075E54]/80">
+          Send your product interest instantly. Our team replies quickly with pricing,
+          availability and delivery options.
+        </span>
+      </span>
+    </a>
+  );
+}
+
+export function ProductWhatsAppOrderButton({
+  phone,
+  businessName,
+  productName,
+  className = "",
+  advertised,
+  productId,
+  price,
+}: ProductWhatsAppCTAProps) {
+  const waUrl = whatsappLink(phone, orderMessage(businessName, productName));
+
+  return (
+    <a
+      href={waUrl}
+      target="_blank"
+      rel="noreferrer"
+      onClick={() => trackWhatsAppOrder({ advertised, productId, productName, price })}
+      className={`inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-5 py-3.5 text-[14px] font-semibold text-white transition hover:brightness-110 ${className}`}
+    >
+      <WhatsAppIcon className="h-5 w-5" />
+      Order on WhatsApp
+    </a>
+  );
+}
+
+export function ProductWhatsAppMobileBar({
+  phone,
+  businessName,
+  productName,
+  advertised,
+  productId,
+  price,
+}: ProductWhatsAppCTAProps) {
+  const waUrl = whatsappLink(phone, orderMessage(businessName, productName));
+
+  return (
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-black/10 bg-white/95 px-4 py-3 backdrop-blur lg:hidden">
+      <a
+        href={waUrl}
+        target="_blank"
+        rel="noreferrer"
+        onClick={() => trackWhatsAppOrder({ advertised, productId, productName, price })}
+        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-5 py-3.5 text-[14px] font-semibold text-white shadow-[0_-4px_20px_rgba(11,16,32,0.08)] transition hover:brightness-110"
+      >
+        <WhatsAppIcon className="h-5 w-5" />
+        Order on WhatsApp
+      </a>
+    </div>
+  );
+}
