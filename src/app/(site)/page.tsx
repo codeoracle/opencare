@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { withBase } from "@/lib/hosts";
 import { getProducts } from "@/lib/queries";
-import { getCurrentTenant } from "@/lib/tenant";
+import { getBasePath, getCurrentTenant } from "@/lib/tenant";
 import { ProductCard } from "@/components/ProductCard";
 import { PlatformLanding } from "@/components/PlatformLanding";
 import { Hero } from "@/components/Hero";
@@ -8,7 +9,7 @@ import { Hero } from "@/components/Hero";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const tenant = await getCurrentTenant();
+  const [tenant, base] = await Promise.all([getCurrentTenant(), getBasePath()]);
   if (!tenant) return <PlatformLanding />;
 
   const products = await getProducts(tenant.id, { limit: 12 });
@@ -26,21 +27,21 @@ export default async function HomePage() {
         tall
       >
         <Link
-          href="/products"
+          href={withBase(base, "/products")}
           className="inline-flex items-center justify-center rounded-xl bg-[var(--brand)] px-6 py-3.5 ring-1 ring-white/25 text-[14px] font-semibold text-[var(--brand-ink)] transition hover:brightness-110"
         >
           Browse Products
         </Link>
         {tenant.enableDistributors ? (
           <Link
-            href="/become-a-distributor"
+            href={withBase(base, "/become-a-distributor")}
             className="inline-flex items-center justify-center rounded-xl border border-white/25 bg-white/5 px-6 py-3.5 text-[14px] font-semibold text-white backdrop-blur transition hover:border-white/40 hover:bg-white/10"
           >
             Become a Distributor
           </Link>
         ) : (
           <Link
-            href="/contact"
+            href={withBase(base, "/contact")}
             className="inline-flex items-center justify-center rounded-xl border border-white/25 bg-white/5 px-6 py-3.5 text-[14px] font-semibold text-white backdrop-blur transition hover:border-white/40 hover:bg-white/10"
           >
             Contact Us
@@ -55,7 +56,7 @@ export default async function HomePage() {
               <h2 className="text-[30px] font-semibold">Featured products</h2>
               <p className="mt-2 text-[14px] text-black/65">Our most requested products.</p>
             </div>
-            <Link href="/products" className="hidden text-[13px] font-semibold text-[var(--brand2)] hover:underline sm:inline">
+            <Link href={withBase(base, "/products")} className="hidden text-[13px] font-semibold text-[var(--brand2)] hover:underline sm:inline">
               View all →
             </Link>
           </div>
@@ -91,7 +92,7 @@ export default async function HomePage() {
             <p className="mt-2 text-[14px] text-black/65">Explore the full catalogue.</p>
           </div>
           <Link
-            href="/products"
+            href={withBase(base, "/products")}
             className="inline-flex items-center justify-center rounded-xl bg-[var(--brand2)] px-4 py-2.5 text-[13px] font-semibold text-[var(--brand2-ink)] transition hover:brightness-110"
           >
             View catalogue

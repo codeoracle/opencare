@@ -25,7 +25,7 @@ export function brandHref(t: { slug: string; domains?: string[] }) {
   if (t.domains?.length) return `https://${t.domains[0]}`;
   const root = platformRootDomain();
   if (root) return `https://${t.slug}.${root}`;
-  return `/?client=${t.slug}`;
+  return `/${t.slug}`;
 }
 
 /** Live client brands for the public openCare directory. */

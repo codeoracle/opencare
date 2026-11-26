@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getProductBySlug } from "@/lib/queries";
 import { getCurrentTenant } from "@/lib/tenant";
 import { formatPrice } from "@/lib/utils";
-import { priceLabel } from "@/components/ProductCard";
+import { priceLabel } from "@/lib/price";
 import { ProductEnquiryForm } from "@/components/ProductEnquiryForm";
 import { ProductPixelTracker } from "@/components/ProductPixelTracker";
 import { ProductGallery } from "@/components/ProductGallery";

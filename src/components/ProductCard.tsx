@@ -1,24 +1,23 @@
+"use client";
+
 import Link from "next/link";
 import { ProductImage } from "@/components/ProductImage";
-import { formatPrice } from "@/lib/utils";
+import { useHref } from "@/components/BasePath";
+import { priceLabel, type PriceDisplay } from "@/lib/price";
 import type { ProductCard as ProductCardData } from "@/types/catalog";
 
 export type { ProductCardData };
 
-export type PriceDisplay = { currency: string; showPrices: boolean };
-
-export function priceLabel(price: number | undefined, display: PriceDisplay) {
-  if (!display.showPrices || price == null) return "Price on request";
-  return formatPrice(price, display.currency);
-}
+export type { PriceDisplay };
 
 export function ProductCard({ product, display }: { product: ProductCardData; display: PriceDisplay }) {
+  const href = useHref();
   const img = product.images?.[0];
   const subtitle = [product.brand?.name, product.category?.name].filter(Boolean).join(" · ");
 
   return (
     <Link
-      href={`/products/${product.slug}`}
+      href={href(`/products/${product.slug}`)}
       className="group relative overflow-hidden rounded-2xl border border-black/8 bg-white shadow-[0_8px_30px_rgba(11,16,32,0.04)] transition duration-500 hover:-translate-y-1.5 hover:border-[var(--brand)]/35 hover:shadow-[0_24px_50px_rgba(11,16,32,0.12)]"
     >
       {/* Pack shots on white, shown whole (contain) rather than cropped. */}

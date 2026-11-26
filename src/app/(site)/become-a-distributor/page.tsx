@@ -1,8 +1,9 @@
 import Link from "next/link";
+import { withBase } from "@/lib/hosts";
 import { notFound } from "next/navigation";
 import { DistributorApplicationForm } from "@/components/DistributorApplicationForm";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
-import { getCurrentTenant } from "@/lib/tenant";
+import { getBasePath, getCurrentTenant } from "@/lib/tenant";
 import { whatsappLink } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +16,7 @@ const DEFAULT_BENEFITS = [
 ];
 
 export default async function DistributorPage() {
-  const tenant = await getCurrentTenant();
+  const [tenant, base] = await Promise.all([getCurrentTenant(), getBasePath()]);
   if (!tenant || !tenant.enableDistributors) notFound();
 
   const wa = tenant.contact.whatsapp
@@ -58,7 +59,7 @@ export default async function DistributorPage() {
               </a>
             ) : null}
             <Link
-              href="/products"
+              href={withBase(base, "/products")}
               className="inline-flex items-center justify-center rounded-xl border border-black/10 bg-white px-5 py-3 text-[14px] font-semibold transition hover:bg-black/5"
             >
               Review Products

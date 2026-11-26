@@ -3,6 +3,7 @@ import { createSlug } from "@/lib/utils";
 import { cleanDomains } from "@/lib/tenant";
 import { parseFacebookPixelConfig } from "@/lib/facebookPixel";
 import { safeHex } from "@/lib/theme";
+import { RESERVED_PATHS } from "@/lib/hosts";
 
 const str = z.string().trim().optional().default("");
 const titled = z.array(z.object({ title: z.string().trim(), desc: z.string().trim().default("") }));
@@ -14,7 +15,7 @@ export const slugSchema = z
   .trim()
   .toLowerCase()
   .regex(/^[a-z0-9](?:[a-z0-9-]{0,40}[a-z0-9])?$/, "Use lowercase letters, numbers and dashes.")
-  .refine((s) => !RESERVED_SLUGS.has(s), "That name is reserved.");
+  .refine((s) => !RESERVED_SLUGS.has(s) && !RESERVED_PATHS.has(s), "That name is reserved.");
 
 export const createTenantSchema = z.object({
   name: z.string().trim().min(2),

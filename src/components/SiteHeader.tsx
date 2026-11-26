@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useHref } from "@/components/BasePath";
 
 export function SiteHeader({
   name,
@@ -16,18 +17,19 @@ export function SiteHeader({
   enableDistributors: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const href = useHref();
   const nav = [
-    { href: "/", label: "Home" },
-    { href: "/about", label: "About Us" },
-    { href: "/products", label: "Products" },
-    ...(enableDistributors ? [{ href: "/become-a-distributor", label: "Become a Distributor" }] : []),
-    { href: "/contact", label: "Contact Us" },
+    { href: href("/"), label: "Home" },
+    { href: href("/about"), label: "About Us" },
+    { href: href("/products"), label: "Products" },
+    ...(enableDistributors ? [{ href: href("/become-a-distributor"), label: "Become a Distributor" }] : []),
+    { href: href("/contact"), label: "Contact Us" },
   ];
 
   return (
     <header className="sticky top-0 z-50 border-b border-black/5 bg-white/85 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-        <Link href="/" className="flex min-w-0 items-center gap-2.5">
+        <Link href={href("/")} className="flex min-w-0 items-center gap-2.5">
           {logoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -51,7 +53,7 @@ export function SiteHeader({
 
         <div className="hidden md:flex">
           <Link
-            href="/products"
+            href={href("/products")}
             className="inline-flex items-center justify-center rounded-lg bg-black px-4 py-2 text-[13px] font-semibold text-white transition hover:bg-black/90"
           >
             Order a Product
@@ -86,7 +88,7 @@ export function SiteHeader({
             ))}
           </nav>
           <Link
-            href="/products"
+            href={href("/products")}
             onClick={() => setOpen(false)}
             className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-black px-4 py-2.5 text-[13px] font-semibold text-white"
           >

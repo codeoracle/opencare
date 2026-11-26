@@ -1,9 +1,9 @@
 import { cache } from "react";
-import { cookies, headers } from "next/headers";
+import { headers } from "next/headers";
 import { connectDB } from "@/lib/db";
 import { Tenant, type ITenant } from "@/models/Tenant";
 import { getPlatform } from "@/lib/platform";
-import { isPlatformHost, normalizeHost, PREVIEW_COOKIE, subdomainSlug } from "@/lib/hosts";
+import { CLIENT_HEADER, isPlatformHost, normalizeHost, subdomainSlug } from "@/lib/hosts";
 import { normalizeWhatsAppNumber } from "@/lib/utils";
 
 /** Plain, serializable view of a client used by the public site. */
@@ -133,16 +133,19 @@ async function findTenantIdForKey(key: string, query: Record<string, unknown>) {
   return id;
 }
 
-/** Work out which client a request host belongs to. */
-export async function resolveTenantId(rawHost: string, previewSlug?: string | null) {
+/**
+ * Work out which client a request belongs to. `pathSlug` is the brand from the
+ * address path (theopencare.netlify.app/<slug>), set by middleware.
+ */
+export async function resolveTenantId(rawHost: string, pathSlug?: string | null) {
   const host = normalizeHost(rawHost);
   if (!host) return null;
   await connectDB();
 
   if (isPlatformHost(host)) {
-    // The platform's own domain shows a client when previewing (?client=slug),
-    // otherwise DEFAULT_CLIENT (if set), otherwise the openCare landing page.
-    const slug = (previewSlug || process.env.DEFAULT_CLIENT || "").trim().toLowerCase();
+    // Platform domain: /<slug> opens that brand; the root shows DEFAULT_CLIENT
+    // if set, otherwise the openCare home page.
+    const slug = (pathSlug || process.env.DEFAULT_CLIENT || "").trim().toLowerCase();
     if (!slug) return null;
     return findTenantIdForKey(`slug:${slug}`, { slug });
   }
@@ -157,8 +160,7 @@ export async function resolveTenantId(rawHost: string, previewSlug?: string | nu
 export const getCurrentTenant = cache(async (): Promise<SiteTenant | null> => {
   const h = await headers();
   const host = h.get("x-forwarded-host") || h.get("host") || "";
-  const preview = (await cookies()).get(PREVIEW_COOKIE)?.value || null;
-  const id = await resolveTenantId(host, preview);
+  const id = await resolveTenantId(host, h.get(CLIENT_HEADER));
   if (!id) return null;
   const [doc, platform] = await Promise.all([Tenant.findById(id).lean<ITenant>(), getPlatform()]);
   if (!doc || !doc.isActive) return null;
@@ -168,8 +170,7 @@ export const getCurrentTenant = cache(async (): Promise<SiteTenant | null> => {
 /** Same as getCurrentTenant but for route handlers that receive a Request. */
 export async function getTenantForRequest(req: Request) {
   const host = req.headers.get("x-forwarded-host") || req.headers.get("host") || "";
-  const preview = (await cookies()).get(PREVIEW_COOKIE)?.value || null;
-  const id = await resolveTenantId(host, preview);
+  const id = await resolveTenantId(host, req.headers.get(CLIENT_HEADER));
   if (!id) return null;
   return Tenant.findById(id).lean<ITenant>();
 }
@@ -184,4 +185,13 @@ export function cleanDomains(input: string[] | string | undefined) {
 export const isPlatformRequest = cache(async () => {
   const h = await headers();
   return isPlatformHost(normalizeHost(h.get("x-forwarded-host") || h.get("host") || ""));
+});
+
+/** The brand slug from the address path, when the brand is opened as /<slug>. */
+export const getPathClient = cache(async () => (await headers()).get(CLIENT_HEADER));
+
+/** Prefix for internal links: "/bilef" when opened by path, "" on a brand's own domain. */
+export const getBasePath = cache(async () => {
+  const slug = await getPathClient();
+  return slug ? `/${slug}` : "";
 });

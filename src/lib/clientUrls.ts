@@ -11,5 +11,5 @@ export function clientSiteUrl(c: { slug: string; domains?: string[] }) {
 /** Preview on the platform domain itself; works before DNS is set up. */
 export function clientPreviewUrl(c: { slug: string }) {
   const base = (process.env.SITE_URL || "http://localhost:3000").replace(/\/$/, "");
-  return `${base}/?client=${c.slug}`;
+  return `${base}/${c.slug}`;
 }

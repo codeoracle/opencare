@@ -1,15 +1,16 @@
 import Link from "next/link";
+import { withBase } from "@/lib/hosts";
 import { notFound } from "next/navigation";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { Hero } from "@/components/Hero";
-import { getCurrentTenant } from "@/lib/tenant";
+import { getBasePath, getCurrentTenant } from "@/lib/tenant";
 import { whatsappLink } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "About Us" };
 
 export default async function AboutPage() {
-  const tenant = await getCurrentTenant();
+  const [tenant, base] = await Promise.all([getCurrentTenant(), getBasePath()]);
   if (!tenant) notFound();
 
   const wa = tenant.contact.whatsapp
@@ -26,7 +27,7 @@ export default async function AboutPage() {
         subtitle={tenant.aboutIntro || tenant.tagline}
       >
         <Link
-          href="/products"
+          href={withBase(base, "/products")}
           className="inline-flex items-center justify-center rounded-xl bg-[var(--brand)] px-6 py-3.5 ring-1 ring-white/25 text-[14px] font-semibold text-[var(--brand-ink)] transition hover:brightness-110"
         >
           Explore Products
@@ -134,13 +135,13 @@ export default async function AboutPage() {
           </p>
           <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
-              href="/products"
+              href={withBase(base, "/products")}
               className="inline-flex items-center justify-center rounded-xl bg-[var(--brand)] px-6 py-3.5 ring-1 ring-white/25 text-[14px] font-semibold text-[var(--brand-ink)] transition hover:brightness-110"
             >
               Shop Products
             </Link>
             <Link
-              href="/contact"
+              href={withBase(base, "/contact")}
               className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 text-[14px] font-semibold text-white transition hover:bg-white/10"
             >
               Contact Us

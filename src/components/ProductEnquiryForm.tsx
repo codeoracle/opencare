@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { isServiceUnavailable } from "@/lib/readApiError";
 import { z } from "zod";
+import { useHref } from "@/components/BasePath";
 import { ProductWhatsAppCTA } from "@/components/ProductWhatsAppCTA";
 import { trackAdvertisedProductOrder } from "@/lib/facebookPixel";
 
@@ -34,6 +35,7 @@ export function ProductEnquiryForm({
   price?: number;
 }) {
   const formRef = useRef<HTMLFormElement>(null);
+  const href = useHref();
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -64,7 +66,7 @@ export function ProductEnquiryForm({
 
     try {
       setStatus("submitting");
-      const res = await fetch("/api/enquiries/product", {
+      const res = await fetch(href("/api/enquiries/product"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...parsed.data, website: (form.elements.namedItem("website") as HTMLInputElement | null)?.value || "" }),

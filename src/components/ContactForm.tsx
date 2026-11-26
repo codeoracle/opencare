@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { isServiceUnavailable } from "@/lib/readApiError";
 import { z } from "zod";
+import { useHref } from "@/components/BasePath";
 
 const schema = z.object({
   name: z.string().min(2, "Enter your name"),
@@ -14,6 +15,7 @@ const schema = z.object({
 
 export function ContactForm() {
   const formRef = useRef<HTMLFormElement>(null);
+  const href = useHref();
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -41,7 +43,7 @@ export function ContactForm() {
 
     try {
       setStatus("submitting");
-      const res = await fetch("/api/contact", {
+      const res = await fetch(href("/api/contact"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...parsed.data, website: (form.elements.namedItem("website") as HTMLInputElement | null)?.value || "" }),

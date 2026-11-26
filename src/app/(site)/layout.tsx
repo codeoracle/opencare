@@ -3,7 +3,14 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ConditionalWhatsAppFloat } from "@/components/ConditionalWhatsAppFloat";
 import { FacebookPixel } from "@/components/FacebookPixel";
-import { getCurrentTenant, isPlatformRequest } from "@/lib/tenant";
+import { notFound } from "next/navigation";
+import {
+  getBasePath,
+  getCurrentTenant,
+  getPathClient,
+  isPlatformRequest,
+} from "@/lib/tenant";
+import { BasePathProvider } from "@/components/BasePath";
 import { BrandBar } from "@/components/BrandBar";
 import { themeVars } from "@/lib/theme";
 
@@ -30,32 +37,56 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function SiteLayout({ children }: { children: React.ReactNode }) {
+export default async function SiteLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const tenant = await getCurrentTenant();
 
   // Platform domain with no client selected: the page renders the openCare landing.
-  if (!tenant) return <>{children}</>;
-  const viaPlatform = await isPlatformRequest();
+  if (!tenant) {
+    // /<unknown-slug> is a 404, not the openCare home page.
+    if (await getPathClient()) notFound();
+    return <>{children}</>;
+  }
+  const [viaPlatform, basePath] = await Promise.all([
+    isPlatformRequest(),
+    getBasePath(),
+  ]);
 
   return (
-    <div
-      className="oc-site flex min-h-screen flex-col"
-      data-heading={tenant.headingFont}
-      style={themeVars(tenant.primaryColor, tenant.accentColor)}
-    >
-      <FacebookPixel pixelIds={tenant.facebookPixelIds} conversionEvents={tenant.facebookConversionEvents} />
-      {viaPlatform ? <BrandBar platformName={process.env.PLATFORM_NAME || "openCare"} brandName={tenant.name} /> : null}
-      <SiteHeader
-        name={tenant.name}
-        logoUrl={tenant.logoUrl}
-        showNameWithLogo={tenant.showNameWithLogo}
-        enableDistributors={tenant.enableDistributors}
-      />
-      <main className="flex-1">{children}</main>
-      <SiteFooter tenant={tenant} />
-      {tenant.contact.whatsapp ? (
-        <ConditionalWhatsAppFloat phone={tenant.contact.whatsapp} businessName={tenant.name} />
-      ) : null}
-    </div>
+    <BasePathProvider base={basePath}>
+      <div
+        className="oc-site flex min-h-screen flex-col"
+        data-heading={tenant.headingFont}
+        style={themeVars(tenant.primaryColor, tenant.accentColor)}
+      >
+        <FacebookPixel
+          pixelIds={tenant.facebookPixelIds}
+          conversionEvents={tenant.facebookConversionEvents}
+        />
+        {viaPlatform ? (
+          <BrandBar
+            platformName={process.env.PLATFORM_NAME || "openCare"}
+            brandName={tenant.name}
+          />
+        ) : null}
+        <SiteHeader
+          name={tenant.name}
+          logoUrl={tenant.logoUrl}
+          showNameWithLogo={tenant.showNameWithLogo}
+          enableDistributors={tenant.enableDistributors}
+        />
+        <main className="flex-1">{children}</main>
+        <SiteFooter tenant={tenant} basePath={basePath} />
+        {tenant.contact.whatsapp ? (
+          <ConditionalWhatsAppFloat
+            phone={tenant.contact.whatsapp}
+            businessName={tenant.name}
+          />
+        ) : null}
+      </div>
+    </BasePathProvider>
   );
 }

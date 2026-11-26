@@ -6,7 +6,7 @@ import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 export function ConditionalWhatsAppFloat({ phone, businessName }: { phone: string; businessName: string }) {
   const pathname = usePathname();
   // Product pages have their own mobile WhatsApp bar.
-  const isProductDetail = pathname.startsWith("/products/");
+  const isProductDetail = pathname.includes("/products/");
 
   return (
     <WhatsAppFloat

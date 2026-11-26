@@ -45,3 +45,18 @@ export function subdomainSlug(host: string) {
   }
   return null;
 }
+
+/** Request header set by middleware when a brand is opened by path: /<slug>/... */
+export const CLIENT_HEADER = "x-oc-client";
+
+/** First path segments that belong to the platform, never to a brand. */
+export const RESERVED_PATHS = new Set([
+  "products", "about", "contact", "become-a-distributor",
+  "admin", "api", "clients", "images", "_next", "favicon.ico", "robots.txt", "sitemap.xml",
+]);
+
+/** "/bilef" + "/products" → "/bilef/products"; "" + "/" → "/". */
+export function withBase(base: string, path: string) {
+  if (!base) return path;
+  return path === "/" ? base : `${base}${path}`;
+}

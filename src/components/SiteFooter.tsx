@@ -3,8 +3,9 @@ import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { SocialIcons } from "@/components/SocialIcons";
 import { formatPhoneDisplay, whatsappLink } from "@/lib/utils";
 import type { SiteTenant } from "@/lib/tenant";
+import { withBase } from "@/lib/hosts";
 
-export function SiteFooter({ tenant }: { tenant: SiteTenant }) {
+export function SiteFooter({ tenant, basePath = "" }: { tenant: SiteTenant; basePath?: string }) {
   const { contact } = tenant;
   const wa = contact.whatsapp ? whatsappLink(contact.whatsapp, `Hello ${tenant.name}, I'd like product support.`) : "";
   const links = [
@@ -13,7 +14,7 @@ export function SiteFooter({ tenant }: { tenant: SiteTenant }) {
     { href: "/about", label: "About Us" },
     ...(tenant.enableDistributors ? [{ href: "/become-a-distributor", label: "Become a Distributor" }] : []),
     { href: "/contact", label: "Contact" },
-  ];
+  ].map((l) => ({ ...l, href: withBase(basePath, l.href) }));
 
   return (
     <footer className="border-t border-black/5 bg-[#0b1020] text-white">
