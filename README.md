@@ -29,8 +29,7 @@ npm run dev
 ```
 
 - Admin: http://localhost:3000/admin/login
-- Demo client: http://demo.localhost:3000 (Chrome/Firefox resolve `*.localhost` automatically)
-  or http://localhost:3000/?client=demo (preview cookie; `?client=` clears it)
+- Demo client: http://localhost:3000/demo (every brand has its own path: /<slug>)
 
 ## Admin
 
@@ -50,6 +49,7 @@ Clients can be set up entirely in the admin, or from a script when there's a big
 | RAFCARE (brand of AFCARE / Guangzhou Aifujia Biotechnology) | `npm run client:rafcare` | AFCARE Ready Stock Catalog PDF — 68 products, photos in `public/clients/rafcare/` |
 | Glossy & Lovely (Green Chemicals Pakistan) | `npm run client:glossy-lovely` | 10 product banners — 15 products, photos in `public/clients/glossy-lovely/` |
 | BILEF (YASS Cosmetic) | `npm run client:bilef` | BILEF Catalog 202608 PDF — 74 products, photos in `public/clients/bilef/` |
+| V.V.LOVE | `npm run client:vv-love` | Shower Gel Set, Water Bottle and 90 ml Mist PDFs — 93 products, photos in `public/clients/vv-love/` |
 
 Scripts are safe to re-run; they update the client and its products in place.
 

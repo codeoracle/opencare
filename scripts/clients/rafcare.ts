@@ -9,7 +9,7 @@ importRafcare()
   .then((r) => {
     console.log(`✓ RAFCARE client with ${r.products} products in ${r.categories} categories`);
     if (r.missingPhotos) console.log(`  ${r.missingPhotos} products have no photo yet`);
-    console.log("  Preview: http://rafcare.localhost:3000 or /?client=rafcare");
+    console.log("  Preview: http://rafcare.localhost:3000 or /rafcare");
     process.exit(0);
   })
   .catch((err) => {

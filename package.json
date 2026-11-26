@@ -10,7 +10,8 @@
     "seed": "node --env-file=.env.local --import tsx scripts/seed.ts",
     "client:rafcare": "node --env-file=.env.local --import tsx scripts/clients/rafcare.ts",
     "client:glossy-lovely": "node --env-file=.env.local --import tsx scripts/clients/glossy-lovely.ts",
-    "client:bilef": "node --env-file=.env.local --import tsx scripts/clients/bilef.ts"
+    "client:bilef": "node --env-file=.env.local --import tsx scripts/clients/bilef.ts",
+    "client:vv-love": "node --env-file=.env.local --import tsx scripts/clients/vv-love.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
