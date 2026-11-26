@@ -179,3 +179,9 @@ export function cleanDomains(input: string[] | string | undefined) {
   const list = typeof input === "string" ? input.split(/[\s,]+/) : input ?? [];
   return Array.from(new Set(list.map(normalizeHost).filter((d) => d && d.includes("."))));
 }
+
+/** True when the request came in on the platform's own address (not a client's domain). */
+export const isPlatformRequest = cache(async () => {
+  const h = await headers();
+  return isPlatformHost(normalizeHost(h.get("x-forwarded-host") || h.get("host") || ""));
+});

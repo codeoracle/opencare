@@ -3,14 +3,21 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ConditionalWhatsAppFloat } from "@/components/ConditionalWhatsAppFloat";
 import { FacebookPixel } from "@/components/FacebookPixel";
-import { getCurrentTenant } from "@/lib/tenant";
+import { getCurrentTenant, isPlatformRequest } from "@/lib/tenant";
+import { BrandBar } from "@/components/BrandBar";
 import { themeVars } from "@/lib/theme";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const tenant = await getCurrentTenant();
-  if (!tenant) return { title: process.env.PLATFORM_NAME || "openCare" };
+  if (!tenant) {
+    const name = process.env.PLATFORM_NAME || "openCare";
+    return {
+      title: `${name}: Beauty & Personal Care Brands in Nigeria`,
+      description: `${name} distributes skincare, body care and hair care brands in Nigeria. Browse our brands and order retail or wholesale.`,
+    };
+  }
   return {
     title: { default: tenant.metaTitle, template: `%s · ${tenant.name}` },
     description: tenant.metaDescription || undefined,
@@ -28,6 +35,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
 
   // Platform domain with no client selected: the page renders the openCare landing.
   if (!tenant) return <>{children}</>;
+  const viaPlatform = await isPlatformRequest();
 
   return (
     <div
@@ -36,6 +44,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       style={themeVars(tenant.primaryColor, tenant.accentColor)}
     >
       <FacebookPixel pixelIds={tenant.facebookPixelIds} conversionEvents={tenant.facebookConversionEvents} />
+      {viaPlatform ? <BrandBar platformName={process.env.PLATFORM_NAME || "openCare"} brandName={tenant.name} /> : null}
       <SiteHeader
         name={tenant.name}
         logoUrl={tenant.logoUrl}
