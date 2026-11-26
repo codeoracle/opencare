@@ -14,8 +14,8 @@ export async function generateMetadata(): Promise<Metadata> {
   if (!tenant) {
     const name = process.env.PLATFORM_NAME || "openCare";
     return {
-      title: `${name}: Beauty & Personal Care Brands in Nigeria`,
-      description: `${name} distributes skincare, body care and hair care brands in Nigeria. Browse our brands and order retail or wholesale.`,
+      title: `${name}: Distributor in Nigeria`,
+      description: `${name} is a Nigerian distributor partnering with manufacturers to market and sell their products and give their brands publicity. Browse our brands and order retail or wholesale.`,
     };
   }
   return {

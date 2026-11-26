@@ -4,17 +4,24 @@ import { getBrandCards, type BrandCard } from "@/lib/brands";
 import { formatPhoneDisplay, whatsappLink } from "@/lib/utils";
 
 const STEPS = [
-  { n: "01", title: "We partner with the manufacturer", desc: "We agree terms, confirm the range and get the documents needed to sell in Nigeria." },
-  { n: "02", title: "We build the brand's catalogue site", desc: "Every product with photos, ingredients and sizes, on the brand's own address." },
-  { n: "03", title: "We bring in buyers", desc: "Retail customers, shops, salons and distributors enquire online or on WhatsApp." },
-  { n: "04", title: "We handle every lead", desc: "We follow up, quote, take orders and pass them to the manufacturer for delivery." },
+  { n: "01", title: "Partner", desc: "We sign on as the manufacturer's distributor in Nigeria and agree the range, pricing and terms." },
+  { n: "02", title: "Publicise", desc: "We give the brand a home online: its own store, social media content and campaigns that build awareness." },
+  { n: "03", title: "Market", desc: "We put the products in front of shoppers, shops, salons, pharmacies and sub-distributors across Nigeria." },
+  { n: "04", title: "Sell & distribute", desc: "We handle enquiries, orders, wholesale accounts and delivery, and report back to the manufacturer." },
+];
+
+const SERVICES = [
+  { title: "Distribution", desc: "Importation, stock and delivery to retailers, wholesalers and end customers nationwide." },
+  { title: "Marketing & sales", desc: "A dedicated sales team, WhatsApp ordering and a growing network of shops and distributors." },
+  { title: "Brand publicity", desc: "An online store for every brand, product photos, social media promotion and ad campaigns." },
+  { title: "Market feedback", desc: "Regular updates on what sells, what customers ask for and where demand is growing." },
 ];
 
 const AUDIENCES = [
   { title: "Shoppers", desc: "Browse each brand's full range and order on WhatsApp in minutes." },
   { title: "Shops, salons & pharmacies", desc: "Buy wholesale across several brands from one contact." },
   { title: "Distributors", desc: "Apply on any brand's site to stock it in your city or state." },
-  { title: "Manufacturers", desc: "Reach Nigerian buyers without opening a local office. We do the selling." },
+  { title: "Manufacturers", desc: "Enter the Nigerian market without a local office. We distribute, market and promote your brand." },
 ];
 
 function BrandTile({ b }: { b: BrandCard }) {
@@ -102,14 +109,14 @@ export async function PlatformLanding() {
         <div aria-hidden className="absolute -right-32 -top-32 h-[480px] w-[480px] rounded-full bg-emerald-500/20 blur-3xl" />
         <div aria-hidden className="absolute -bottom-40 left-1/3 h-[380px] w-[380px] rounded-full bg-fuchsia-500/10 blur-3xl" />
         <div className="relative mx-auto max-w-6xl px-4 py-20 sm:py-28">
-          <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-emerald-300/80">Beauty & personal care distribution · Nigeria</p>
+          <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-emerald-300/80">Distributor · Nigeria</p>
           <h1 className="mt-5 max-w-3xl text-[40px] font-semibold leading-[1.05] sm:text-[60px]">
-            Trusted beauty brands, brought to Nigeria.
+            We market, sell and promote great brands across Nigeria.
           </h1>
           <p className="mt-6 max-w-2xl text-[16px] leading-7 text-white/70">
-            {platform.name} partners with skincare, body care and hair care manufacturers and runs their
-            sales in Nigeria: a catalogue site for every brand, and one team handling every enquiry,
-            wholesale order and distributor application.
+            {platform.name} is a Nigerian distributor. We partner with manufacturers to market and sell
+            their products and give their brands the publicity they deserve, from first launch to
+            shelves, salons and homes nationwide.
           </p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
             <a href="#brands" className="inline-flex items-center justify-center rounded-xl bg-emerald-500 px-6 py-3.5 text-[14px] font-semibold text-[#0b1020] hover:bg-emerald-400">
@@ -130,7 +137,8 @@ export async function PlatformLanding() {
       <section id="brands" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-20">
         <h2 className="text-[32px] font-semibold">Our brands</h2>
         <p className="mt-2 max-w-2xl text-[15px] text-black/60">
-          Each brand has its own store with the full range. Browse, then enquire or order on WhatsApp.
+          The manufacturers we distribute in Nigeria. Each brand has its own store with the full range:
+          browse, then order retail or wholesale on WhatsApp.
         </p>
         <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {brands.length ? (
@@ -144,7 +152,7 @@ export async function PlatformLanding() {
       <section id="how" className="scroll-mt-20 border-y border-black/5 bg-white">
         <div className="mx-auto max-w-6xl px-4 py-20">
           <h2 className="text-[32px] font-semibold">How it works</h2>
-          <p className="mt-2 max-w-2xl text-[15px] text-black/60">One partner between manufacturers and Nigerian buyers.</p>
+          <p className="mt-2 max-w-2xl text-[15px] text-black/60">From partnership to publicity to sales, one team in Nigeria.</p>
           <ol className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-4">
             {STEPS.map((s) => (
               <li key={s.n} className="rounded-2xl border border-black/8 bg-[#f7f6f3] p-5">
@@ -154,6 +162,18 @@ export async function PlatformLanding() {
               </li>
             ))}
           </ol>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pt-20">
+        <h2 className="text-[32px] font-semibold">What we do for manufacturers</h2>
+        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {SERVICES.map((a) => (
+            <div key={a.title} className="rounded-2xl border border-black/8 bg-white p-5">
+              <div className="text-[16px] font-semibold">{a.title}</div>
+              <p className="mt-2 text-[13px] leading-6 text-black/60">{a.desc}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -172,10 +192,10 @@ export async function PlatformLanding() {
 
       <section id="partner" className="mx-auto max-w-6xl scroll-mt-20 px-4 pb-20">
         <div className="overflow-hidden rounded-[28px] bg-gradient-to-br from-[#0b1020] to-emerald-900 px-6 py-12 text-white sm:px-12">
-          <h2 className="max-w-2xl text-[32px] font-semibold">Manufacturer? Let&apos;s take your brand to Nigeria.</h2>
+          <h2 className="max-w-2xl text-[32px] font-semibold">Manufacturer? Make us your distributor in Nigeria.</h2>
           <p className="mt-4 max-w-2xl text-[15px] leading-7 text-white/70">
-            We build your catalogue site, market your products, handle enquiries and grow a distributor
-            network. You focus on making great products.
+            We market and sell your products, build your brand&apos;s name with Nigerian buyers, and grow a
+            network of shops and sub-distributors. You focus on making great products.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             {partnerWa ? (
@@ -197,7 +217,7 @@ export async function PlatformLanding() {
           <div>
             <div className="text-[20px] font-bold">open<span className="text-emerald-400">Care</span></div>
             <p className="mt-3 max-w-xs text-[13px] leading-6 text-white/60">
-              Distribution partner for beauty and personal care manufacturers in Nigeria.
+              Nigerian distributor partnering with manufacturers to market, sell and promote their brands.
             </p>
           </div>
           <div>

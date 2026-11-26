@@ -8,7 +8,7 @@ export function BrandBar({ platformName, brandName }: { platformName: string; br
         <a href="/?client=" className="font-semibold text-white/80 hover:text-white">
           ← All {platformName} brands
         </a>
-        <span className="truncate text-white/50">{brandName} is distributed by {platformName}</span>
+        <span className="truncate text-white/50">{brandName} is distributed in Nigeria by {platformName}</span>
       </div>
     </div>
   );
