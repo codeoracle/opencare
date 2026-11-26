@@ -7,7 +7,6 @@ import { notFound } from "next/navigation";
 import {
   getBasePath,
   getCurrentTenant,
-  getPathClient,
   isPlatformRequest,
 } from "@/lib/tenant";
 import { BasePathProvider } from "@/components/BasePath";
@@ -18,13 +17,7 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const tenant = await getCurrentTenant();
-  if (!tenant) {
-    const name = process.env.PLATFORM_NAME || "openCare";
-    return {
-      title: `${name}: Distributor in Nigeria`,
-      description: `${name} is a Nigerian distributor partnering with manufacturers to market and sell their products and give their brands publicity. Browse our brands and order retail or wholesale.`,
-    };
-  }
+  if (!tenant) return {};
   return {
     title: { default: tenant.metaTitle, template: `%s · ${tenant.name}` },
     description: tenant.metaDescription || undefined,
@@ -44,12 +37,8 @@ export default async function SiteLayout({
 }) {
   const tenant = await getCurrentTenant();
 
-  // Platform domain with no client selected: the page renders the openCare landing.
-  if (!tenant) {
-    // /<unknown-slug> is a 404, not the openCare home page.
-    if (await getPathClient()) notFound();
-    return <>{children}</>;
-  }
+  // Unknown brand (or a hidden one): 404.
+  if (!tenant) notFound();
   const [viaPlatform, basePath] = await Promise.all([
     isPlatformRequest(),
     getBasePath(),

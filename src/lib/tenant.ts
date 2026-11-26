@@ -143,9 +143,8 @@ export async function resolveTenantId(rawHost: string, pathSlug?: string | null)
   await connectDB();
 
   if (isPlatformHost(host)) {
-    // Platform domain: /<slug> opens that brand; the root shows DEFAULT_CLIENT
-    // if set, otherwise the openCare home page.
-    const slug = (pathSlug || process.env.DEFAULT_CLIENT || "").trim().toLowerCase();
+    // Platform domain: only /<slug> opens a brand; the root is the openCare home page.
+    const slug = (pathSlug || "").trim().toLowerCase();
     if (!slug) return null;
     return findTenantIdForKey(`slug:${slug}`, { slug });
   }

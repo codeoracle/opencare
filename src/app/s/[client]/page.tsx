@@ -1,16 +1,16 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { withBase } from "@/lib/hosts";
 import { getProducts } from "@/lib/queries";
 import { getBasePath, getCurrentTenant } from "@/lib/tenant";
 import { ProductCard } from "@/components/ProductCard";
-import { PlatformLanding } from "@/components/PlatformLanding";
 import { Hero } from "@/components/Hero";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const [tenant, base] = await Promise.all([getCurrentTenant(), getBasePath()]);
-  if (!tenant) return <PlatformLanding />;
+  if (!tenant) notFound();
 
   const products = await getProducts(tenant.id, { limit: 12 });
   const featured = products.filter((p) => p.isFeatured).slice(0, 4);

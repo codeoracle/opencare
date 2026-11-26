@@ -46,12 +46,20 @@ export function subdomainSlug(host: string) {
   return null;
 }
 
+/**
+ * Internal route prefix for brand stores: /s/<client>/... Never shown to visitors.
+ * <client> is the brand slug on the platform domain, or DOMAIN_CLIENT on a
+ * brand's own domain (the brand is then looked up from the host).
+ */
+export const STORE_PREFIX = "/s";
+export const DOMAIN_CLIENT = "_d";
+
 /** Request header set by middleware when a brand is opened by path: /<slug>/... */
 export const CLIENT_HEADER = "x-oc-client";
 
 /** First path segments that belong to the platform, never to a brand. */
 export const RESERVED_PATHS = new Set([
-  "products", "about", "contact", "become-a-distributor",
+  "s", "products", "about", "contact", "become-a-distributor",
   "admin", "api", "clients", "images", "_next", "favicon.ico", "robots.txt", "sitemap.xml",
 ]);
 
