@@ -12,6 +12,7 @@ export type SiteTenant = {
   name: string;
   slug: string;
   logoUrl: string;
+  showNameWithLogo: boolean;
   primaryColor: string;
   accentColor: string;
   headingFont: "serif" | "sans";
@@ -64,6 +65,7 @@ export function serializeTenant(
     name: doc.name,
     slug: doc.slug,
     logoUrl: s(doc.logoUrl),
+    showNameWithLogo: !!doc.showNameWithLogo,
     primaryColor: s(doc.primaryColor) || "#2563eb",
     accentColor: s(doc.accentColor) || "#f97316",
     headingFont: doc.headingFont === "serif" ? "serif" : "sans",

@@ -39,6 +39,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <SiteHeader
         name={tenant.name}
         logoUrl={tenant.logoUrl}
+        showNameWithLogo={tenant.showNameWithLogo}
         enableDistributors={tenant.enableDistributors}
       />
       <main className="flex-1">{children}</main>

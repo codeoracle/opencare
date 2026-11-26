@@ -29,6 +29,7 @@ export const tenantSchema = z.object({
   isActive: z.boolean().default(true),
 
   logoUrl: str,
+  showNameWithLogo: z.boolean().default(false),
   primaryColor: str,
   accentColor: str,
   headingFont: z.enum(["serif", "sans"]).default("sans"),
@@ -87,6 +88,7 @@ export function toTenantFields(d: TenantInput) {
     domains: cleanDomains(d.domains),
     isActive: d.isActive,
     logoUrl: d.logoUrl,
+    showNameWithLogo: d.showNameWithLogo,
     primaryColor: safeHex(d.primaryColor, "#2563eb"),
     accentColor: safeHex(d.accentColor, "#f97316"),
     headingFont: d.headingFont,

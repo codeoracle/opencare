@@ -48,6 +48,7 @@ Clients can be set up entirely in the admin, or from a script when there's a big
 | Client | Command | Source |
 | --- | --- | --- |
 | RAFCARE (brand of AFCARE / Guangzhou Aifujia Biotechnology) | `npm run client:rafcare` | AFCARE Ready Stock Catalog PDF — 68 products, photos in `public/clients/rafcare/` |
+| Glossy & Lovely (Green Chemicals Pakistan) | `npm run client:glossy-lovely` | 10 product banners — 15 products, photos in `public/clients/glossy-lovely/` |
 
 Scripts are safe to re-run; they update the client and its products in place.
 

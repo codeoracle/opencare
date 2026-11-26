@@ -25,6 +25,7 @@ export default async function AdminClientPage({ params }: { params: Promise<{ id
     domains: (t.domains || []).join("\n"),
     isActive: t.isActive,
     logoUrl: s(t.logoUrl),
+    showNameWithLogo: !!t.showNameWithLogo,
     primaryColor: s(t.primaryColor) || "#2563eb",
     accentColor: s(t.accentColor) || "#f97316",
     headingFont: t.headingFont === "serif" ? "serif" : "sans",

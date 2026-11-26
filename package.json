@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "node --env-file=.env.local --import tsx scripts/seed.ts",
-    "client:rafcare": "node --env-file=.env.local --import tsx scripts/clients/rafcare.ts"
+    "client:rafcare": "node --env-file=.env.local --import tsx scripts/clients/rafcare.ts",
+    "client:glossy-lovely": "node --env-file=.env.local --import tsx scripts/clients/glossy-lovely.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",

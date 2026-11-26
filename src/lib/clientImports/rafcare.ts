@@ -6,26 +6,14 @@
  * Used by `npm run client:rafcare` and by Admin → Clients → "Import RAFCARE".
  * Photos live in public/clients/rafcare/.
  */
-import { connectDB } from "@/lib/db";
-import { Tenant } from "@/models/Tenant";
-import { Category } from "@/models/Category";
-import { Product } from "@/models/Product";
-import { createSlug } from "@/lib/utils";
-import { invalidateTenantCache } from "@/lib/tenant";
+import { runClientImport, type Catalog } from "@/lib/clientImports/runner";
 import manifest from "../../../public/clients/rafcare/manifest.json";
 
-type Item = {
-  name: string;
-  ingredients: string[];
-  benefits: string[];
-  use?: string;
-  size?: string;
-  featured?: boolean;
-};
+
 
 // Benefits are worded as "brightening / evens tone / fades dark spots" rather
 // than "whitening" to suit the Nigerian market and NAFDAC advertising norms.
-const CATALOG: Record<string, { desc: string; items: Item[] }> = {
+const CATALOG: Catalog = {
   "Face Serums": {
     desc: "Targeted serums and ampoules for hydration, brightening, acne and anti-ageing.",
     items: [
@@ -101,6 +89,7 @@ const CATALOG: Record<string, { desc: string; items: Item[] }> = {
   },
   "Body Care": {
     desc: "Lotions, scrubs, balms and treatments for smooth, even skin.",
+    use: "Body",
     items: [
       { name: "Neck Firming Cream", ingredients: ["Vitamin E", "Sweet Almond Oil", "Hyaluronic Acid"], benefits: ["Reduces neck lines", "Brightening", "Moisturizing"] },
       { name: "Underarm Detox Scrub", ingredients: ["Turmeric Root", "Niacinamide", "Vitamin C"], benefits: ["Deodorizing", "Detoxifying", "Exfoliating"] },
@@ -136,32 +125,13 @@ const CATALOG: Record<string, { desc: string; items: Item[] }> = {
   },
 };
 
-function lowerFirst(s: string) {
-  return s.charAt(0).toLowerCase() + s.slice(1);
-}
-
-function describe(item: Item) {
-  const list = (xs: string[]) =>
-    xs.length > 1 ? `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}` : xs[0];
-  return (
-    `RAFCARE ${item.name} is formulated with ${list(item.ingredients)}. ` +
-    `${item.benefits.length ? `${list(item.benefits.map(lowerFirst)).replace(/^./, (c) => c.toUpperCase())}.` : ""}\n\n` +
-    "Available for retail and wholesale orders. Send an enquiry or message us on WhatsApp for pricing, " +
-    "minimum order quantities and delivery."
-  );
-}
-
 /** Create or update the RAFCARE client and its catalogue. Safe to re-run. */
 export async function importRafcare() {
-  await connectDB();
-  await Promise.all([Tenant.syncIndexes(), Category.syncIndexes(), Product.syncIndexes()]);
   const images = manifest as Record<string, string[]>;
   const asset = (name: string) => (images[`_${name}`]?.[0] ? images[`_${name}`][0] : "");
 
   const tenantFields = {
     name: "RAFCARE",
-    slug: "rafcare",
-    isActive: true,
     logoUrl: asset("logo"),
     primaryColor: "#60774e",
     accentColor: "#2f9e7f",
@@ -226,53 +196,12 @@ export async function importRafcare() {
       "Shop RAFCARE professional skincare: vitamin C, niacinamide, kojic acid and retinol serums, face creams, masks, sunscreen and body care. Retail and wholesale.",
   };
 
-  const tenant = await Tenant.findOneAndUpdate(
-    // Matches the earlier "afcare" record too, so re-running renames it in place.
-    { slug: { $in: ["rafcare", "afcare"] } },
-    { $set: tenantFields, $setOnInsert: { domains: [] } },
-    { upsert: true, new: true }
-  );
-
-  let count = 0;
-  for (const [catName, { desc, items }] of Object.entries(CATALOG)) {
-    const category = await Category.findOneAndUpdate(
-      { tenant: tenant._id, slug: createSlug(catName) },
-      { $set: { tenant: tenant._id, name: catName, slug: createSlug(catName), description: desc, isActive: true } },
-      { upsert: true, new: true }
-    );
-
-    for (const item of items) {
-      const slug = createSlug(item.name);
-      const specs = [
-        { label: "Key ingredients", value: item.ingredients.join(", ") },
-        { label: "Use on", value: item.use || (catName.startsWith("Body") ? "Body" : "Face") },
-        ...(item.size ? [{ label: "Size", value: item.size }] : []),
-      ];
-      await Product.findOneAndUpdate(
-        { tenant: tenant._id, slug },
-        {
-          $set: {
-            tenant: tenant._id,
-            name: item.name,
-            slug,
-            category: category._id,
-            shortDescription: item.benefits.join(" · "),
-            description: describe(item),
-            specs,
-            features: item.benefits,
-            images: images[slug] || [],
-            isFeatured: !!item.featured,
-            isActive: true,
-          },
-          $setOnInsert: { stock: 0, isAdvertised: false },
-        },
-        { upsert: true }
-      );
-      count++;
-    }
-  }
-
-  const missing = await Product.countDocuments({ tenant: tenant._id, images: { $size: 0 } });
-  invalidateTenantCache();
-  return { tenantId: String(tenant._id), products: count, categories: Object.keys(CATALOG).length, missingPhotos: missing };
+  return runClientImport({
+    // Also matches the earlier "afcare" record, so re-running renames it in place.
+    slugs: ["rafcare", "afcare"],
+    brand: "RAFCARE",
+    tenant: tenantFields,
+    catalog: CATALOG,
+    images: (slug) => images[slug] || [],
+  });
 }

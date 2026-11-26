@@ -16,6 +16,8 @@ export interface ITenant {
 
   // Branding
   logoUrl?: string;
+  /** Show the client name beside the logo (for icon-style logos). */
+  showNameWithLogo?: boolean;
   primaryColor: string;
   accentColor: string;
   headingFont: "serif" | "sans";
@@ -77,6 +79,7 @@ const TenantSchema = new Schema<ITenant>(
     isActive: { type: Boolean, default: true },
 
     logoUrl: String,
+    showNameWithLogo: { type: Boolean, default: false },
     primaryColor: { type: String, default: "#2563eb" },
     accentColor: { type: String, default: "#f97316" },
     headingFont: { type: String, enum: ["serif", "sans"], default: "sans" },

@@ -11,6 +11,7 @@ export type TenantFormValues = {
   domains: string;
   isActive: boolean;
   logoUrl: string;
+  showNameWithLogo: boolean;
   primaryColor: string;
   accentColor: string;
   headingFont: "serif" | "sans";
@@ -345,7 +346,10 @@ export function TenantForm({
       </Section>
 
       <Section title="Branding">
-        <ImageField label="Logo" value={f.logoUrl} onChange={(v) => set("logoUrl", v)} clientId={id} hint="Also used as the browser tab icon." />
+        <div className="space-y-2">
+          <ImageField label="Logo" value={f.logoUrl} onChange={(v) => set("logoUrl", v)} clientId={id} hint="Also used as the browser tab icon." />
+          <Toggle checked={f.showNameWithLogo} onChange={(v) => set("showNameWithLogo", v)} label="Show client name beside the logo (for icon logos)" />
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <Field label="Main colour">
             <div className="flex items-center gap-2">

@@ -7,10 +7,12 @@ import { cn } from "@/lib/utils";
 export function SiteHeader({
   name,
   logoUrl,
+  showNameWithLogo = false,
   enableDistributors,
 }: {
   name: string;
   logoUrl: string;
+  showNameWithLogo?: boolean;
   enableDistributors: boolean;
 }) {
   const [open, setOpen] = useState(false);
@@ -28,10 +30,15 @@ export function SiteHeader({
         <Link href="/" className="flex min-w-0 items-center gap-2.5">
           {logoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={logoUrl} alt={name} className="h-9 w-auto max-w-[160px] object-contain" />
-          ) : (
+            <img
+              src={logoUrl}
+              alt={showNameWithLogo ? "" : name}
+              className={showNameWithLogo ? "h-10 w-10 rounded-full object-cover" : "h-9 w-auto max-w-[160px] object-contain"}
+            />
+          ) : null}
+          {!logoUrl || showNameWithLogo ? (
             <span className="oc-display truncate text-[17px] font-semibold leading-tight text-black">{name}</span>
-          )}
+          ) : null}
         </Link>
 
         <nav className="hidden items-center gap-6 text-[13px] md:flex">
