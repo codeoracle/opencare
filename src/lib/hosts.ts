@@ -68,3 +68,11 @@ export function withBase(base: string, path: string) {
   if (!base) return path;
   return path === "/" ? base : `${base}${path}`;
 }
+
+/** Public URL of the platform: SITE_URL, else https://<PLATFORM_ROOT_DOMAIN>, else localhost. */
+export function siteUrl() {
+  const explicit = process.env.SITE_URL?.trim();
+  if (explicit) return explicit.replace(/\/$/, "");
+  const root = platformRootDomain();
+  return root ? `https://${root}` : "http://localhost:3000";
+}

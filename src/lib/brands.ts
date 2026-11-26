@@ -2,7 +2,6 @@ import { Types } from "mongoose";
 import { connectDB } from "@/lib/db";
 import { Tenant, type ITenant } from "@/models/Tenant";
 import { Product } from "@/models/Product";
-import { platformRootDomain } from "@/lib/hosts";
 
 export type BrandCard = {
   slug: string;
@@ -22,9 +21,8 @@ export type BrandCard = {
 
 /** Where a visitor on the openCare site goes to see a brand. */
 export function brandHref(t: { slug: string; domains?: string[] }) {
+  // A brand's own domain if it has one; otherwise its path on the openCare site.
   if (t.domains?.length) return `https://${t.domains[0]}`;
-  const root = platformRootDomain();
-  if (root) return `https://${t.slug}.${root}`;
   return `/${t.slug}`;
 }
 

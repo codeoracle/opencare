@@ -64,7 +64,7 @@ export function CreateClientForm({ rootDomain }: { rootDomain: string }) {
           />
         </label>
         <label className="block">
-          <span className="text-[12px] font-semibold text-black/60">Subdomain</span>
+          <span className="text-[12px] font-semibold text-black/60">Brand link</span>
           <input
             required
             value={effectiveSlug}
@@ -76,7 +76,7 @@ export function CreateClientForm({ rootDomain }: { rootDomain: string }) {
             className={`mt-1.5 ${inputCls}`}
           />
           <span className="mt-1 block text-[11px] text-black/45">
-            {effectiveSlug || "name"}.{rootDomain || "your-platform-domain"}
+            {rootDomain || "your-site"}/{effectiveSlug || "name"}
           </span>
         </label>
         <label className="block">

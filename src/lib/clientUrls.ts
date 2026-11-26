@@ -1,15 +1,12 @@
-import { platformRootDomain } from "@/lib/hosts";
+import { siteUrl } from "@/lib/hosts";
 
-/** Best public URL for a client: custom domain → platform subdomain → local preview. */
+/** Public URL for a client: its own domain if set, otherwise its path on the openCare site. */
 export function clientSiteUrl(c: { slug: string; domains?: string[] }) {
   if (c.domains?.length) return `https://${c.domains[0]}`;
-  const root = platformRootDomain();
-  if (root) return `https://${c.slug}.${root}`;
   return clientPreviewUrl(c);
 }
 
-/** Preview on the platform domain itself; works before DNS is set up. */
+/** The brand's page on the openCare site, e.g. https://theopencare.com.ng/bilef. */
 export function clientPreviewUrl(c: { slug: string }) {
-  const base = (process.env.SITE_URL || "http://localhost:3000").replace(/\/$/, "");
-  return `${base}/${c.slug}`;
+  return `${siteUrl()}/${c.slug}`;
 }

@@ -1,3 +1,4 @@
+import { siteUrl } from "@/lib/hosts";
 import type { Metadata } from "next";
 import { Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import "@/app/globals.css";
@@ -15,7 +16,7 @@ const sans = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: process.env.PLATFORM_NAME || "openCare",
-  metadataBase: new URL(process.env.SITE_URL || "http://localhost:3000"),
+  metadataBase: new URL(siteUrl()),
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

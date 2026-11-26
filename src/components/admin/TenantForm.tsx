@@ -314,7 +314,7 @@ export function TenantForm({
         <Field label="Client name">
           <input {...text("name")} className={inputCls} />
         </Field>
-        <Field label="Subdomain" hint={`${f.slug || "name"}.${rootDomain || "your-platform-domain"}`}>
+        <Field label="Brand link" hint={`${rootDomain || "your-site"}/${f.slug || "name"}`}>
           <input {...text("slug")} className={inputCls} />
         </Field>
         <Field

@@ -1,3 +1,4 @@
+import { siteUrl } from "@/lib/hosts";
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import { getTenantForRequest } from "@/lib/tenant";
@@ -27,7 +28,7 @@ export async function recordLead(
   const lead = await Lead.create({ ...fields, tenant: tenant._id, tenantName: tenant.name, status: "new" });
 
   const platform = await getPlatform();
-  const adminBase = process.env.SITE_URL?.replace(/\/$/, "");
+  const adminBase = siteUrl();
   const email = leadEmail(
     { ...fields, tenantName: tenant.name },
     adminBase ? `${adminBase}/admin/dashboard?client=${tenant._id}` : undefined
